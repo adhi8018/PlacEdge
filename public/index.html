@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlaceEdge - CU Placement AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+
+    <div class="top-brand">
+      <img src="images/cu_logo.png" alt="CU Logo" class="cu-logo">
+      <h1 class="brand-name">PlaceEdge</h1>
+      <p class="brand-tagline">Your Edge for Campus Placements</p>
+    </div>
+
+    <header class="hero">
+      <h2>CU Placement Prep Assistant</h2>
+      <p>
+        AI-powered support for resume building, interview prep, HR answers,
+        skill analysis, and placement readiness.
+      </p>
+    </header>
+
+    <section class="module-cards">
+      <div class="card card1">Resume Analyzer</div>
+      <div class="card card2">Interview Practice</div>
+      <div class="card card3">HR Answer Improver</div>
+      <div class="card card4">Skill Gap Analyzer</div>
+      <div class="card card5">Placement Drive Readiness Checker</div>
+    </section>
+
+    <section class="main-grid">
+      <div class="left-panel">
+        <label for="moduleSelect">Choose Module</label>
+        <select id="moduleSelect">
+          <option value="resume">Resume Analyzer</option>
+          <option value="interview">Interview Practice</option>
+          <option value="hr">HR Answer Improver</option>
+          <option value="skillgap">Skill Gap Analyzer</option>
+          <option value="readiness">Placement Drive Readiness Checker</option>
+        </select>
+
+        <label for="userInput">Enter your content</label>
+        <textarea id="userInput" placeholder="Paste your resume, profile, or HR answer here..."></textarea>
+
+        <div class="button-group">
+          <button id="sampleBtn">Load Sample</button>
+          <button id="generateBtn">Generate Result</button>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="output-header">
+          <h2>AI Output</h2>
+          <button id="copyBtn">Copy</button>
+        </div>
+        <div id="outputBox" class="output-box">Your result will appear here...</div>
+      </div>
+    </section>
+
+    <section class="tips-section">
+        <section class="about-section">
+      <h2>Quick Placement Tips</h2>
+      <ul>
+        <li>Build at least 2 strong projects and upload them to GitHub.</li>
+        <li>Practice HR and technical questions regularly.</li>
+        <li>Improve communication and confidence for interviews.</li>
+        <li>Focus on resume quality and relevant job skills.</li>
+      </ul>
+      
+    <h2 style="margin-top: 10px;">About PlacEdge</h2>
+    <p>
+        PlacEdge is an AI-powered placement preparation assistant designed to help students improve their chances of success in campus placements. 
+        It provides smart support for resume analysis, interview practice, HR answer improvement, skill gap analysis, and placement readiness checking.
+    </p>
+    <p><b>
+        The goal of PlacEdge is to guide students in identifying their strengths, improving weak areas, and preparing confidently for placement drives. 
+        With a simple and user-friendly interface, it acts as a virtual mentor for career preparation.
+    </b>
+    </p>
+</section>
+
+<footer class="footer">
+    <p>© 2026 PlacEdge | AI-Powered Placement Prep Assistant</p>
+    <p>Developed for student placement preparation and career growth.</p>
+</footer>
+    </section>
+
+    
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
