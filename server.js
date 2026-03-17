@@ -5,118 +5,127 @@ require("dotenv").config();
 const { GoogleGenAI } = require("@google/genai");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-console.log("API KEY FOUND:", process.env.GEMINI_API_KEY ? "YES" : "NO");
+// ✅ Check if API key exists
+if (!process.env.GEMINI_API_KEY) {
+  console.error("❌ GEMINI_API_KEY not found in .env file");
+  process.exit(1);
+}
 
+// ✅ Initialize Gemini safely
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 });
 
+// ✅ Gemini function
 async function runGemini(prompt) {
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt
-  });
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt
+    });
 
-  return response.text;
+    return response.text;
+  } catch (err) {
+    console.error("Gemini Error:", err.message);
+    throw err;
+  }
 }
 
+// ✅ API Route
 app.post("/analyze", async (req, res) => {
   try {
     const { module, input } = req.body;
 
+    if (!module || !input) {
+      return res.status(400).json({ output: "Missing input or module." });
+    }
+
     let prompt = "";
 
-    if (module === "resume") {
-      prompt = `
-You are a placement mentor for Chandigarh University students.
+    switch (module) {
+      case "resume":
+        prompt = `You are a placement mentor.
 
-Analyze the following resume and give:
-1. Resume score out of 10
+Analyze the resume:
+1. Score /10
 2. Strengths
 3. Weak areas
 4. Missing skills
-5. Suggestions for improvement
-6. Better summary/objective
+5. Suggestions
+6. Better summary
 
 Resume:
-${input}
-`;
-    } else if (module === "interview") {
-      prompt = `
-You are a mock interview coach for Chandigarh University placement students.
+${input}`;
+        break;
 
-Based on this profile, generate:
-1. 5 technical interview questions
-2. 5 HR interview questions
-3. Short ideal answers/hints for each
+      case "interview":
+        prompt = `You are a mock interview coach.
 
-Student profile:
-${input}
-`;
-    } else if (module === "hr") {
-      prompt = `
-You are an HR communication trainer.
+Generate:
+- 5 technical questions
+- 5 HR questions
+- Short answers
 
-Improve the following HR answer so it sounds professional, confident, concise, and placement-ready.
-Also explain what was improved.
+Profile:
+${input}`;
+        break;
 
-Answer:
-${input}
-`;
-    } else if (module === "skillgap") {
-      prompt = `
-You are a placement preparation advisor.
+      case "hr":
+        prompt = `Improve this HR answer professionally and explain improvements:
 
-Based on the student profile below, identify:
-1. Current skills
-2. Missing industry-relevant skills
-3. Skills to learn first
-4. 30-day improvement plan
-5. Suggested project ideas
+${input}`;
+        break;
 
-Student profile:
-${input}
-`;
-    } else if (module === "readiness") {
-      prompt = `
-You are a campus placement readiness evaluator.
+      case "skillgap":
+        prompt = `Analyze skill gap and provide:
+- Skills
+- Missing skills
+- 30-day plan
+- Projects
 
-Analyze this student profile and provide:
-1. Readiness score out of 10
-2. Strong points
-3. Weak points
-4. What should be improved before placement drive
-5. Final verdict: Ready / Almost Ready / Not Ready
+Profile:
+${input}`;
+        break;
 
-Student profile:
-${input}
-`;
-    } else {
-      return res.status(400).json({ output: "Invalid module selected." });
+      case "readiness":
+        prompt = `Evaluate placement readiness:
+- Score /10
+- Strengths
+- Weaknesses
+- Final verdict
+
+Profile:
+${input}`;
+        break;
+
+      default:
+        return res.status(400).json({ output: "Invalid module selected." });
     }
 
     const output = await runGemini(prompt);
     res.json({ output });
+
   } catch (error) {
-    console.error("FULL GEMINI ERROR:");
-    console.error(error);
+    console.error("FULL GEMINI ERROR:", error);
 
     res.status(500).json({
-      output: "Gemini API request failed. Check terminal for exact error."
+      output: "Gemini API failed. Check server logs."
     });
   }
 });
 
+// ✅ Serve frontend
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// ✅ Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
